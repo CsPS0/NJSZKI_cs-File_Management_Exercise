@@ -1,7 +1,5 @@
 ﻿#region 1. Feladat
-using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.Serialization.Formatters;
 
 Console.ForegroundColor = ConsoleColor.Red;
 Console.WriteLine("1. Feladat");
@@ -15,12 +13,12 @@ double[] esoMennyiseg = new double[napokSzama];
 
 for (int i = 0; i < napokSzama; i++)
 {
-    esoMennyiseg[i] = double.Parse(sorok[i + 1]);
+    esoMennyiseg[i] = double.Parse(sorok[i + 1], CultureInfo.InvariantCulture);
 }
 
 Console.Write("Beolvasod a fájlt?: ");
 Console.ForegroundColor = ConsoleColor.Yellow;
-string valasz = Console.ReadLine();
+string valasz = Console.ReadLine()?.ToLower();
 Console.ResetColor();
 
 if (valasz == "igen")
@@ -30,16 +28,15 @@ if (valasz == "igen")
     Console.WriteLine(file_name);
     Console.ResetColor();
 }
-
 else if (valasz == "nem")
 {
     Console.WriteLine("A fájlt nem kívántad beolvasni...");
     return;
 }
-
 else
 {
     Console.WriteLine("Nem értelmezhető!");
+    return;
 }
 #endregion
 
@@ -59,28 +56,25 @@ Console.ForegroundColor = ConsoleColor.Red;
 Console.WriteLine("2. Feladat");
 Console.ResetColor();
 
-static void NapMinosites(string[] sorok)
+static string NapMinosites(double esoMennyiseg)
 {
-    for (int i = 0; i < sorok.Length; i++)
+    if (esoMennyiseg == 0)
     {
-        double esoMennyiseg = double.Parse(sorok[i]);
-        if (esoMennyiseg == 0)
-        {
-            return "Nem volt eső";
-        }
-
-        else if (esoMennyiseg < 10)
-        {
-            return "Gyenge eső";
-        }
-
-        else
-        {
-            return "Sok eső";
-        }
+        return "nem volt eső";
     }
-    
+    else if (esoMennyiseg < 10)
+    {
+        return "gyenge eső";
+    }
+    else
+    {
+        return "sok eső";
+    }
 }
+
+Console.ForegroundColor = ConsoleColor.Magenta;
+Console.WriteLine("Ez a feladat működik, csak ugyebár alapból nem kell kiírnia semmit...");
+Console.ResetColor();
 #endregion
 
 #region pause
@@ -124,22 +118,22 @@ Console.ForegroundColor = ConsoleColor.Red;
 Console.WriteLine("4. Feladat");
 Console.ResetColor();
 
-List<int> kevesebbEsotNapiak = new List<int>();
+List<int> kevesebbEsotNapok = new List<int>();
 for (int i = 1; i < napokSzama; i++)
 {
     if (esoMennyiseg[i] < esoMennyiseg[i - 1])
     {
-        kevesebbEsotNapiak.Add(i + 1);
+        kevesebbEsotNapok.Add(i + 1);
     }
 }
 
 Console.ForegroundColor = ConsoleColor.Yellow;
 Console.WriteLine("Májusban az előző napinál kevesebb eső esett:");
-foreach (var nap in kevesebbEsotNapiak)
+foreach (var nap in kevesebbEsotNapok)
 {
-    Console.WriteLine(nap);
+    Console.WriteLine($"{nap}.");
 }
 Console.ResetColor();
 
-File.WriteAllLines("kevesebb.txt", kevesebbEsotNapiak.Select(x => x.ToString()));
+File.WriteAllLines("kevesebb.txt", kevesebbEsotNapok.Select(x => $"{x}."));
 #endregion
